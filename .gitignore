@@ -1,8 +1,5 @@
-.venv/
-.pytest_cache/
-.matplotlib_cache/
+﻿.venv/
 __pycache__/
-*.py[cod]
-
-results/*.csv
-figures/*.png
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/

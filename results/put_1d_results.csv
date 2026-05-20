@@ -1,0 +1,3 @@
+product,dimension,method,price,standard_error,runtime_seconds,n_train_paths,n_test_paths,seed
+1D Bermudan put,1,LS polynomial degree 2,6.027148523374505,0.022837367167006524,0.20937579998280853,20000,100000,42
+1D Bermudan put,1,LS neural network,6.033014318825424,0.02277413389699818,70.84106679999968,20000,100000,42
