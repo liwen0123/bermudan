@@ -1,66 +1,17 @@
 # Neural Network Regression for Bermudan Exercise Boundary
 
-Longstaff-Schwartz Polynomial Regression vs Neural Network Regression.
-
-This repository is a focused quantitative finance reproduction project. The classical Longstaff-Schwartz Monte Carlo backward induction method will be kept unchanged; only the continuation-value regression step will be compared:
+This project compares two continuation-value regression choices inside the Longstaff-Schwartz Monte Carlo backward induction framework:
 
 1. Polynomial regression.
 2. Neural network regression implemented with scikit-learn `MLPRegressor`.
 
-The primary target is the learned Bermudan exercise boundary / exercise frontier.
+The pricing algorithm itself is unchanged. Only the regression model used to estimate continuation values is replaced.
 
-## Scope
+## Project Objective
 
-First planned experiment:
+The main goal is to reproduce a 1D Bermudan put benchmark and then extend the comparison to a multi-asset Bermudan max-call benchmark. The focus is on price, standard error, runtime, and the practical behavior of the learned exercise policy.
 
-- 1D Bermudan put option under the Black-Scholes model.
-- Classical LS polynomial regression with degree 2 by default.
-- LS neural network regression using `sklearn.neural_network.MLPRegressor`.
-- Independent train and test Monte Carlo paths.
-- Out-of-sample policy evaluation.
-- Result tables saved to `results/`.
-- Figures saved to `figures/`.
-
-Optional extension:
-
-- Bermudan max-call options for `d = 2, 5, 10`.
-
-Out of scope:
-
-- Bermudan swaption models.
-- Cheyette model.
-- LGM model.
-- Tensor Neural Networks.
-- BSDE framework.
-- DANN.
-- Joint learning.
-
-## Project Structure
-
-```text
-.
-|-- README.md
-|-- REFERENCES.md
-|-- report.md
-|-- requirements.txt
-|-- src/
-|   |-- __init__.py
-|   |-- simulation.py
-|   |-- payoffs.py
-|   |-- ls_polynomial.py
-|   |-- ls_neural_network.py
-|   |-- evaluation.py
-|   `-- plotting.py
-|-- scripts/
-|   |-- run_1d_put_experiment.py
-|   `-- run_max_call_experiment.py
-|-- results/
-|-- figures/
-`-- tests/
-    `-- test_basic.py
-```
-
-## Setup
+## Installation
 
 Use Python 3.10 or later.
 
@@ -68,16 +19,10 @@ Use Python 3.10 or later.
 python -m venv .venv
 ```
 
-On Windows PowerShell:
+Activate the environment:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
-```
-
-On macOS/Linux:
-
-```bash
-source .venv/bin/activate
 ```
 
 Install dependencies:
@@ -85,6 +30,8 @@ Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+
+Torch is not required. The neural-network regressor uses scikit-learn `MLPRegressor`.
 
 ## Commands
 
@@ -100,24 +47,51 @@ Run the 1D Bermudan put experiment:
 python scripts/run_1d_put_experiment.py
 ```
 
-Fast smoke run:
+Run the Bermudan max-call experiment:
 
 ```bash
-python scripts/run_1d_put_experiment.py --n-train-paths 1000 --n-test-paths 3000 --n-steps 10 --max-iter 20
+python scripts/run_max_call_experiment.py --dimensions 2 5 10 --n-train-paths 5000 --n-test-paths 20000 --max-iter 1000
 ```
 
-Run the optional Bermudan max-call experiment:
+## Output Files
 
-```bash
-python scripts/run_max_call_experiment.py
-```
+Results are written to `results/`:
 
-## Implementation Status
+- `results/put_1d_results.csv`
+- `results/max_call_results.csv`
 
-Implemented so far:
+Figures are written to `figures/`:
 
-- Black-Scholes GBM path simulation.
-- 1D Bermudan put and max-call payoff helpers.
-- Classical Longstaff-Schwartz with polynomial regression.
-- Longstaff-Schwartz with sklearn `MLPRegressor` continuation-value regression.
-- 1D Bermudan put experiment script with CSV and figure outputs.
+- `figures/put_1d_price_comparison.png`
+- `figures/put_1d_boundary.png`
+- `figures/max_call_price_comparison.png`
+- `figures/max_call_runtime.png`
+- `figures/max_call_runtime_log.png`
+
+## Experimental Summary
+
+Final 1D Bermudan put results:
+
+| method | price | standard error | runtime seconds |
+|---|---:|---:|---:|
+| LS polynomial degree 2 | 6.027149 | 0.022837 | 0.209376 |
+| LS neural network | 6.033014 | 0.022774 | 70.841067 |
+
+Final Bermudan max-call results:
+
+| dimension | method | price | standard error | runtime seconds |
+|---:|---|---:|---:|---:|
+| 2 | LS polynomial degree 2 | 33.936106 | 0.209772 | 0.044173 |
+| 2 | LS neural network | 35.194152 | 0.233935 | 21.409312 |
+| 5 | LS polynomial degree 2 | 57.904093 | 0.221222 | 0.057451 |
+| 5 | LS neural network | 58.542651 | 0.235651 | 71.194198 |
+| 10 | LS polynomial degree 2 | 76.175040 | 0.211657 | 0.213938 |
+| 10 | LS neural network | 75.107426 | 0.222731 | 92.101903 |
+
+## Notes
+
+- The project keeps the Longstaff-Schwartz backward induction framework unchanged and only replaces the continuation-value regression model.
+- The 1D Bermudan put benchmark is the main reproduction result.
+- The Bermudan max-call benchmark is a preliminary multi-dimensional validation for `d = 2, 5, 10`.
+- In the current small-scale setting, neural-network regression is much slower than polynomial LS.
+- The neural-network max-call runs hit the `MLPRegressor` `1000`-iteration cap, so those results should be interpreted cautiously.
