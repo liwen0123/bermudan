@@ -5,7 +5,7 @@ Longstaff-Schwartz Polynomial Regression vs Neural Network Regression.
 This repository is a focused quantitative finance reproduction project. The classical Longstaff-Schwartz Monte Carlo backward induction method will be kept unchanged; only the continuation-value regression step will be compared:
 
 1. Polynomial regression.
-2. Neural network regression.
+2. Neural network regression implemented with scikit-learn `MLPRegressor`.
 
 The primary target is the learned Bermudan exercise boundary / exercise frontier.
 
@@ -14,6 +14,8 @@ The primary target is the learned Bermudan exercise boundary / exercise frontier
 First planned experiment:
 
 - 1D Bermudan put option under the Black-Scholes model.
+- Classical LS polynomial regression with degree 2 by default.
+- LS neural network regression using `sklearn.neural_network.MLPRegressor`.
 - Independent train and test Monte Carlo paths.
 - Out-of-sample policy evaluation.
 - Result tables saved to `results/`.
@@ -98,6 +100,12 @@ Run the 1D Bermudan put experiment:
 python scripts/run_1d_put_experiment.py
 ```
 
+Fast smoke run:
+
+```bash
+python scripts/run_1d_put_experiment.py --n-train-paths 1000 --n-test-paths 3000 --n-steps 10 --max-iter 20
+```
+
 Run the optional Bermudan max-call experiment:
 
 ```bash
@@ -106,4 +114,10 @@ python scripts/run_max_call_experiment.py
 
 ## Implementation Status
 
-This is currently a scaffold only. Algorithms, experiments, result generation, and plotting will be added in later tasks.
+Implemented so far:
+
+- Black-Scholes GBM path simulation.
+- 1D Bermudan put and max-call payoff helpers.
+- Classical Longstaff-Schwartz with polynomial regression.
+- Longstaff-Schwartz with sklearn `MLPRegressor` continuation-value regression.
+- 1D Bermudan put experiment script with CSV and figure outputs.

@@ -11,19 +11,30 @@ This project compares two continuation-value regression choices inside the stand
 1. Classical polynomial regression.
 2. Neural network regression.
 
-The pricing and exercise algorithm itself remains the classical Longstaff-Schwartz method. The only planned change is the regression estimator used at each backward induction step.
+The pricing and exercise algorithm itself remains the classical Longstaff-Schwartz method. The only change is the regression estimator used at each backward induction step.
 
 ## Planned Baseline
 
 The first experiment will use a 1D Bermudan put option under the Black-Scholes model.
 
-Planned workflow:
+Workflow:
 
 1. Simulate training paths.
 2. Fit a Longstaff-Schwartz policy using polynomial regression.
 3. Fit a Longstaff-Schwartz policy using neural network regression.
 4. Evaluate both policies on independent test paths.
 5. Compare prices, standard errors, runtimes, and exercise boundaries.
+
+The neural network continuation model is implemented with scikit-learn `MLPRegressor` inside a `Pipeline` with `StandardScaler`. This avoids a PyTorch dependency and keeps the project portable in restricted local environments.
+
+Default neural network regression:
+
+```text
+hidden_layer_sizes = (64, 64)
+activation = relu
+solver = adam
+max_iter = 300
+```
 
 ## Optional Extension
 
@@ -37,4 +48,10 @@ After the 1D put experiment, the project may add Bermudan max-call options for d
 
 ## Current Status
 
-Project scaffold only. No algorithms have been implemented yet.
+Implemented:
+
+- GBM simulation under Black-Scholes.
+- Payoff functions for 1D Bermudan put and multi-asset max-call.
+- Polynomial Longstaff-Schwartz regression.
+- Neural-network Longstaff-Schwartz regression with sklearn `MLPRegressor`.
+- 1D Bermudan put experiment script with CSV and figure outputs.
