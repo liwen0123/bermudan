@@ -276,9 +276,9 @@ def save_boundary_plot(
         ax.set_xlabel("Asset price")
     handles, labels = axes[0, 0].get_legend_handles_labels()
     if handles:
-        fig.legend(handles, labels, loc="upper center", ncol=3)
-    fig.suptitle("1D Bermudan Put Exercise / Continue Regions", y=0.995)
-    fig.tight_layout(rect=(0, 0, 1, 0.95))
+        fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.965), ncol=3)
+    fig.suptitle("1D Bermudan Put Exercise / Continue Regions", y=0.99)
+    fig.tight_layout(rect=(0, 0, 1, 0.90))
     fig.savefig(output_path, dpi=200)
     plt.close(fig)
 

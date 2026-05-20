@@ -143,6 +143,11 @@ def main() -> None:
     results.to_csv(results_path, index=False)
     save_price_comparison(results, FIGURES_DIR / "max_call_price_comparison.png")
     save_runtime_plot(results, FIGURES_DIR / "max_call_runtime.png")
+    save_runtime_plot(
+        results,
+        FIGURES_DIR / "max_call_runtime_log.png",
+        log_scale=True,
+    )
 
     print("\nSummary")
     print(results.to_string(index=False, float_format=lambda value: f"{value:.6f}"))
@@ -191,7 +196,12 @@ def save_price_comparison(results: pd.DataFrame, output_path: Path) -> None:
     plt.close(fig)
 
 
-def save_runtime_plot(results: pd.DataFrame, output_path: Path) -> None:
+def save_runtime_plot(
+    results: pd.DataFrame,
+    output_path: Path,
+    *,
+    log_scale: bool = False,
+) -> None:
     fig, ax = plt.subplots(figsize=(8, 4.5))
     for method, group in results.groupby("method"):
         group = group.sort_values("dimension")
@@ -203,7 +213,11 @@ def save_runtime_plot(results: pd.DataFrame, output_path: Path) -> None:
         )
     ax.set_xlabel("Dimension")
     ax.set_ylabel("Runtime seconds")
-    ax.set_title("Bermudan Max-Call Runtime")
+    if log_scale:
+        ax.set_yscale("log")
+        ax.set_title("Bermudan Max-Call Runtime (log scale)")
+    else:
+        ax.set_title("Bermudan Max-Call Runtime")
     ax.grid(alpha=0.25)
     ax.legend()
     fig.tight_layout()
